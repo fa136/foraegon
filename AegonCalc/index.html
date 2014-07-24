@@ -1,42 +1,350 @@
 <!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <title>Hello World!</title>
-    </head>
-    <body>
-        <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
+<head>
+    <meta charset="UTF-8">
+    <title>Aegon Calculator</title>
+    <link rel="stylesheet" href="styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="styles/kendo.bootstrap.min.css" />
+    <link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/prettify.css" />
+    <link rel="stylesheet" href="css/screen.css" />
+
+</head>
+<body style="position: relative;">
+<div id="wrapper"><!-- layout --></div>
+
+<div id="final-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Validation Result</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button data-role="button"
+                        id="new-btn"
+                        class="btn btn-primary center-block">New Session <i class="fa fa-file-text-o"></i></button>
+                <button data-role="button"
+                        id="try-again-btn"
+                        data-dismiss="modal"
+                        class="btn btn-primary center-block">Try Again</button>
             </div>
         </div>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript">
-            app.initialize();
-        </script>
-    </body>
+    </div>
+</div>
+
+<script type="text/javascript" src="js/kendo/jquery.min.js"></script>
+<script type="text/javascript" src="js/kendo/kendo.all.min.js"></script>
+<script type="text/javascript" src="js/libs/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/libs/bootstrap.js"></script>
+<script type="text/javascript" src="js/libs/jquery.bootstrap.wizard.custom.js"></script>
+<script type="text/javascript" src="js/building.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
+
+</body>
 </html>
+
+<script id="calculator-tmpl" type="text/x-kendo-template">
+   <div>
+       <div id="document-wizard">
+           <div class="navbar">
+               <div class="navbar-inner">
+                   <ul>
+                       <li><a href="#tab0" data-toggle="tab">Choose Client</a></li>
+                       <li class="disabled"><a href="#tab1" data-toggle="tab">Choose Product</a></li>
+                       <li class="disabled"><a href="#tab2" data-toggle="tab">Record Property</a></li>
+                       <li class="disabled"><a href="#tab3" data-toggle="tab">Choose Coverage</a></li>
+                       <li class="disabled"><a href="#tab4" data-toggle="tab">Validation</a></li>
+                   </ul>
+               </div>
+           </div>
+           <div class="tab-content" data-role="repeater" data-bind="source: forms" data-template="tab-tmpl"></div>
+           <hr />
+           <div class="pull-right">
+               <button class="btn button-next">Next <i class="fa fa-arrow-right"></i></button>
+               <button class="btn button-last">Last <i class="fa fa-flag-checkered"></i></button>
+           </div>
+           <span class="pull-right validation-msg" data-bind="visible: isInvalid"><i class="fa fa-exclamation-triangle"></i> Form has validation errors!</span>
+           <div class="pull-left">
+               <button class="btn button-first"><i class="fa fa-history"></i> First</button>
+               <button class="btn button-previous"><i class="fa fa-arrow-left"></i> Previous</button>
+           </div>
+       </div>
+   </div>
+</script>
+
+<script id="tab-tmpl" type="text/x-kendo-template">
+    <div class="panel panel-default tab-pane" id="#:tab#">
+        # if (index == 4) { #
+            <div class="panel-heading">Summary</div>
+        # } #
+        <div class="panel-body">
+            <div data-role="repeater" data-bind="source: items" data-template="form-tmpl"></div>
+            # if (index == 4) { #
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <button type="button" class="btn button-primary center-block" data-bind="click: callProcess">Validate</button>
+                </div>
+            </div>
+            # } #
+        </div>
+    </div>
+</script>
+
+<script id="form-tmpl" type="text/x-kendo-template">
+    <div>
+        # if (data.hasOwnProperty("groupName")) { #
+            <div class="panel panel-info">
+                <div class="panel-heading" data-bind="text: groupName"></div>
+                <div class="panel-body">
+                    <form role="form">
+                        <div data-role="repeater" data-bind="source: formItems" data-template="form-item-tmpl"></div>
+                    </form>
+                </div>
+            </div>
+        # } else if (type === "label") { #
+            <p><label data-bind="text: label"></label>&nbsp;<span data-bind="text: text"></span></p>
+        # } else { #
+            # if (type === "string") { #
+                <div class="form-group" data-bind="invisible: hidden">
+                    <label data-bind="text: label, attr: { for: name }"></label>
+                    <input type="text"
+                           data-bind="value: value, disabled: disabled, required: required"
+                           data-required-msg="#:label# is required."
+                           class="form-control" />
+                </div>
+            # } else if (type === "checkbox") { #
+                <div class="checkbox" data-bind="invisible: hidden">
+                    <label>
+                        <input type="checkbox" data-bind="checked: value, disabled: disabled, attr: { id: name, name: name }" />&nbsp;<span data-bind="text: label"></span>
+                    </label>
+                </div>
+            # } else if (type === "number") { #
+                <div class="form-group" data-bind="invisible: hidden">
+                    <label data-bind="text: label, attr: { for: name }"></label>
+                    <input data-role="numerictextbox"
+                           data-format="0:n0"
+                           data-bind="value: value, disabled: disabled, required: required"
+                           data-required-msg="#:label# is required."
+                           id="#: name #"
+                           name="#: name #" />
+                </div>
+            # } else if (type === "button") { #
+                <div class="form-group" data-bind="invisible: hidden">
+                    <button data-bind="text: label, click: callButton, disabled: disabled" class="btn btn-primary"></button>
+                </div>
+            # } else if (type === "date") { #
+                <div class="form-group" data-bind="invisible: hidden">
+                    <label data-bind="text: label, attr: { for: name }"></label>
+                    <input data-role="datepicker"
+                           data-bind="value: value, disabled: disabled, required: required"
+                           data-required-msg="#:label# is required."
+                           data-parse-formats="yyyy-MM-dd"
+                           id="#: name #"
+                           name="#: name #"
+                           class="block">
+                </div>
+            # } else if (type === "combobox") { #
+                <div class="form-group" data-bind="invisible: hidden">
+                    <label data-bind="text: label, attr: { for: name }"></label>
+                    <select data-role="dropdownlist"
+                            data-text-field="value"
+                            data-value-field="key"
+                            data-bind="source: list, value: value, disabled: disabled, required: required"
+                            data-required-msg="#:label# is required."
+                            id="#: name #"
+                            name="#: name #"
+                            class="block"></select>
+                </div>
+            # } else if (type === "boolean") { #
+                <div class="form-group" data-bind="invisible: hidden">
+                    <label data-bind="text: label"></label>
+                    <div class="block">
+                        <label>
+                            <input name="#: name #" type="radio" value="true" data-bind="checked: value">
+                            &nbsp;Yes
+                        </label>
+                        <label>
+                            <input name="#: name #" type="radio" value="false" data-bind="checked: value">
+                            &nbsp;No
+                        </label>
+                    </div>
+                </div>
+            # } #
+        # } #
+    </div>
+</script>
+
+<script id="form-item-tmpl" type="text/x-kendo-template">
+    <div>
+        # if (type === "string") { #
+        <div class="form-group" data-bind="invisible: hidden">
+            <label data-bind="text: label, attr: { for: name }"></label>
+            <input type="text"
+                   data-bind="value: value, disabled: disabled, required: required, attr: { id: name, name: name }"
+                   data-required-msg="#:label# is required."
+                   class="form-control" />
+        </div>
+        # } else if (type === "label") { #
+        <p><label data-bind="text: label"></label>&nbsp;<span data-bind="text: text"></span></p>
+        # } else if (type === "checkbox") { #
+        <div class="checkbox" data-bind="invisible: hidden">
+            <label>
+                <input type="checkbox" data-bind="checked: value, disabled: disabled, attr: { id: name, name: name }" />&nbsp;<span data-bind="text: label"></span>
+            </label>
+        </div>
+        # } else if (type === "number") { #
+        <div class="form-group" data-bind="invisible: hidden">
+            <label data-bind="text: label, attr: { for: name }"></label>
+            <input data-role="numerictextbox"
+                   data-bind="value: value, disabled: disabled, required: required"
+                   data-required-msg="#:label# is required."
+                   id="#: name #"
+                   name="#: name #" />
+        </div>
+        # } else if (type === "button") { #
+        <div class="form-group" data-bind="invisible: hidden">
+            <button data-bind="text: label, click: callButton, disabled: disabled" class="btn btn-primary"></button>
+        </div>
+        # } else if (type === "date") { #
+        <div class="form-group" data-bind="invisible: hidden">
+            <label data-bind="text: label, attr: { for: name }"></label>
+            <input data-role="datepicker"
+                   data-bind="value: value, disabled: disabled, required: required"
+                   data-required-msg="#:label# is required."
+                   data-parse-formats="yyyy-MM-dd"
+                   id="#: name #"
+                   name="#: name #"
+                   class="block">
+        </div>
+        # } else if (type === "combobox") { #
+        <div class="form-group" data-bind="invisible: hidden">
+            <label data-bind="text: label, attr: { for: name }"></label>
+            <select data-role="dropdownlist"
+                    data-text-field="value"
+                    data-value-field="key"
+                    data-bind="source: list, value: value, disabled: disabled, required: required"
+                    data-required-msg="#:label# is required."
+                    id="#: name #"
+                    name="#: name #"
+                    class="block"></select>
+        </div>
+        # } else if (type === "boolean") { #
+        <div class="form-group" data-bind="invisible: hidden">
+            <label data-bind="text: label"></label>
+            <div class="block">
+                <label>
+                    <input name="#: name #" type="radio" value="true" data-bind="checked: value">
+                    &nbsp;Yes
+                </label>
+                <label>
+                    <input name="#: name #" type="radio" value="false" data-bind="checked: value">
+                    &nbsp;No
+                </label>
+            </div>
+        </div>
+        # } #
+    </div>
+</script>
+
+<script id="selector-tmpl" type="text/x-kendo-template">
+    <div>
+        <div class="panel panel-info">
+            <div class="panel-heading">To start a new proposal from empty form please  click the ’New session’ button</div>
+            <div class="panel-body">
+                <button data-role="button"
+                        data-bind="click: onSubmit"
+                        class="btn btn-primary center-block">New Session <i class="fa fa-file-text-o"></i></button>
+            </div>
+        </div>
+        <div class="panel panel-info" id="selector-panel">
+            <div class="panel-heading">To start a new proposal from template choose one from below</div>
+            <div class="panel-body">
+                <div class="list-group">
+                    <a href="javascript: void(0);" class="list-group-item"><i class="fa fa-file-zip-o"></i> Proposal for product 21910 with coverage 9 and 25</a>
+                    <a href="javascript: void(0);" class="list-group-item"><i class="fa fa-file-zip-o"></i> Proposal for product 21910 with coverage 9 and 57</a>
+                    <a href="javascript: void(0);" class="list-group-item"><i class="fa fa-file-zip-o"></i> Proposal for product 21340 with coverage 11</a>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-heading">To continue your last unfinished proposal click the ’Continue session’  button</div>
+            <div class="panel-body">
+                <button data-role="button"
+                        class="btn btn-primary center-block">Continue Session <i class="fa fa-file"></i></button>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="login-tmpl" type="text/x-kendo-template">
+    <div class="row section container">
+        <div id="login-panel" class="panel panel-default center-block">
+            <div class="panel-heading">
+                <h3 class="panel-title">Please sign in</h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="inputEmail3" placeholder="Email" data-bind="value: userName">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="inputPassword3" placeholder="Password" data-bind="value: password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"> Remember me
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button class="btn btn-primary pull-right" data-bind="click: signIn"><i class="fa fa-sign-in"></i> Sign in</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="layout-tmpl" type="text/x-kendo-template">
+    <div class="top-suture"></div>
+    <div class="right-suture"></div>
+
+    <div class="container-fluid top-right-padding">
+
+        <div class="right-side pull-right">
+            <div class="paper-right-top"></div>
+            <div class="paper-right"></div>
+        </div>
+        <div class="left-side">
+            <div class="paper-top"></div>
+            <div class="roll pull-left"></div>
+
+            <div id="header-info" data-bind="visible: currentUser">
+                <button class="btn btn-default pull-right clearfix" data-bind="click: logout"><i class="fa fa-sign-out"></i> Logout</button>
+                <span class="username pull-right clearfix">Welcome <span data-bind="text: currentUser.userName"></span>!</span>
+            </div>
+            <hr />
+
+            <div id="content">
+                <!-- here placed kendo views -->
+            </div>
+
+        </div>
+
+    </div>
+</script>

@@ -1,0 +1,174 @@
+
+html, body {
+    width: 100%;
+    height: 100%;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+body > div > div {
+    height: 100%;
+}
+
+#wrapper {
+	background-image:url(../img/bg.png);
+    height: 100%;
+}
+
+#content {
+    width: auto;
+    overflow: hidden;
+}
+
+#content > div,
+#content > div > div {
+    height: 95%;
+}
+
+#content > div > div {
+    overflow-y: scroll;
+    padding: 0 20px 50px 20px;
+}
+
+.left-side {
+    background: white url(../img/papper_bg.png) repeat-y;
+    width: auto;
+    height: 100%;
+    overflow: hidden;;
+}
+
+.k-state-disabled,
+input[disabled] {
+    cursor: not-allowed !important;
+}
+
+.block {
+    display: block;
+}
+
+.roll {
+    width: 93px;
+    height: 100%;
+    background: url(../img/roll.png) top center repeat-y;    
+}
+
+.container-fluid {
+    height: 100%;
+}
+
+.top-suture {
+    background: url(../img/corner_vertical.png) center right repeat-x;
+    width: 100%;
+    height: 20px;
+    position: absolute;
+}
+
+.right-suture {
+    background: url(../img/corner_horizontal.png) center 20px repeat-y;
+    width: 20px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+}
+
+.paper-top {
+    width: 100%;
+    height: 8px;
+    background: url(../img/paper-top.jpg) repeat-x;
+}
+
+.paper-top-left {
+    background: url(../img/paper-top.jpg) repeat-x;
+}
+
+.paper-top-corner {
+    width: 100px;
+    height: 49px;
+    background: url(../img/paper-top-right.jpg) top left no-repeat;
+}
+
+.pager-section {
+    height: 20px;
+    width: 100%;
+}
+
+.vertical-text {
+}
+
+.top-right-padding {
+    padding: 30px 30px 0 0;
+}
+
+.section {
+    display: inline-block;
+    width: 100%;
+}
+
+#header-info {
+    padding: 20px;
+}
+
+.username {
+    margin-top: 8px;
+    margin-right: 10px;
+}
+
+.right-side {
+    height: 100%;
+}
+
+.paper-right {
+    width: 35px;
+    height: 100%;
+    background: url(../img/paper-corner.jpg) repeat-y;
+}
+
+.paper-right-top {
+    width: 35px;
+    height: 49px;
+    position: absolute;
+    background: url(../img/paper-top-right.jpg) top left no-repeat;
+}
+
+/* WIZARD */
+
+.form-group .k-numerictextbox .k-select {
+    display: none;
+}
+
+.form-group .k-numerictextbox {
+    display: block;
+    width: 100%;
+}
+
+.swMain ul.anchor {
+    float: right;
+}
+
+.swMain .stepContainer {
+    clear: left;
+}
+
+/* LOGIN */
+
+#login-panel {
+    width: 500px;
+    margin-top: 10%;
+}
+
+/* LOGIN END */
+
+/* WIZARD */
+
+#document-wizard .validation-msg {
+    line-height: 34px;
+    color: red;
+    background: #ffe0d9;
+    padding: 0 10px;
+    margin: 0 10px;
+    border-radius: 4px;
+}
